@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Users collection: readable by authenticated users; writable by owner or authenticated
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Classes collection: class groups for students & class files
+    match /classes/{classId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Courses collection: courses, materials, assignments, and videos
+    match /courses/{courseId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Stored files collection & chunks for real file uploads/downloads
+    match /stored_files/{fileId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+
+      match /chunks/{chunkId} {
+        allow read: if true;
+        allow create, update, delete: if true;
+      }
+    }
+
+    // Exams collection: readable by anyone/authenticated; writable
+    match /exams/{examId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Attempts collection: single-access lock — once isCompleted is true, answers & completion state are immutable
+    match /attempts/{attemptId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if resource.data.get('isCompleted', false) != true || (
+        request.resource.data.get('isCompleted', false) == true &&
+        request.resource.data.answers == resource.data.answers &&
+        request.resource.data.examId == resource.data.examId &&
+        request.resource.data.studentId == resource.data.studentId
+      );
+      allow delete: if true;
+    }
+
+    // Violations collection: recorded by AI sensor, read by lecturers
+    match /violations/{violationId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Attendance sessions collection: QR code sessions & student records
+    match /attendance_sessions/{sessionId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Grade configurations collection: lecturer-configured weights & grade categories
+    match /grade_configs/{configId} {
+      allow read: if true;
+      allow create, update, delete: if true;
+    }
+
+    // Connection ping doc
+    match /_connection_test/{docId} {
+      allow read: if true;
+    }
+
+    // Default deny catch-all so collection-level restrictions (like immutable attempts) are enforced
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

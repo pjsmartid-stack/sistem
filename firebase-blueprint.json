@@ -1,0 +1,243 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Pengguna sistem baik administrator, dosen, maupun mahasiswa",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "dosen", "mahasiswa"] },
+        "nimOrNip": { "type": "string" },
+        "department": { "type": "string" },
+        "classId": { "type": "string" },
+        "className": { "type": "string" },
+        "avatar": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role", "nimOrNip"]
+    },
+    "ClassGroup": {
+      "title": "ClassGroup",
+      "description": "Pengelompokan kelas atau rombel mahasiswa yang dikelola administrator",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "academicYear": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "code"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Mata kuliah, topik pertemuan ala Moodle, materi teks/gambar, tugas reguler, dan Tugas Projek Mahasiswa",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "credits": { "type": "number" },
+        "lecturerId": { "type": "string" },
+        "lecturerName": { "type": "string" },
+        "semester": { "type": "string" },
+        "schedule": { "type": "string" },
+        "assignedClassIds": { "type": "array" },
+        "enrolledUserIds": { "type": "array" },
+        "topics": { "type": "array" },
+        "contentBlocks": { "type": "array" },
+        "peerProjects": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "code", "name", "credits"]
+    },
+    "Exam": {
+      "title": "Exam",
+      "description": "Paket ujian dengan dukungan penilaian klasik dan Item Response Theory (IRT)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "courseId": { "type": "string" },
+        "courseCode": { "type": "string" },
+        "courseName": { "type": "string" },
+        "topicId": { "type": "string" },
+        "examCategory": { "type": "string" },
+        "lecturerId": { "type": "string" },
+        "lecturerName": { "type": "string" },
+        "durationMinutes": { "type": "number" },
+        "totalPoints": { "type": "number" },
+        "passingGrade": { "type": "number" },
+        "scoringMethod": { "type": "string", "enum": ["classical", "irt"] },
+        "irtModel": { "type": "string", "enum": ["1PL", "2PL", "3PL"] },
+        "gradingGroupId": { "type": "string" },
+        "gradingComponentId": { "type": "string" },
+        "gradingComponentName": { "type": "string" },
+        "showScoreImmediately": { "type": "boolean" },
+        "isScorePublished": { "type": "boolean" },
+        "aiProctoringEnabled": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "courseCode", "courseName", "durationMinutes"]
+    },
+    "Attempt": {
+      "title": "Attempt",
+      "description": "Sesi pengerjaan ujian beserta skor IRT Theta dan nilai akhir mahasiswa",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "examId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "studentNim": { "type": "string" },
+        "isCompleted": { "type": "boolean" },
+        "status": { "type": "string" },
+        "violationsCount": { "type": "number" },
+        "correctCount": { "type": "number" },
+        "scoringMethodUsed": { "type": "string", "enum": ["classical", "irt"] },
+        "irtModelUsed": { "type": "string", "enum": ["1PL", "2PL", "3PL"] },
+        "irtTheta": { "type": "number" },
+        "irtStandardError": { "type": "number" },
+        "irtScaledScore": { "type": "number" },
+        "score": { "type": "number" },
+        "percentage": { "type": "number" },
+        "isPassed": { "type": "boolean" }
+      },
+      "required": ["id", "examId", "studentId", "studentName"]
+    },
+    "Violation": {
+      "title": "Violation",
+      "description": "Catatan insiden kecurangan hasil deteksi AI Proctoring",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "examId": { "type": "string" },
+        "examTitle": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "studentNim": { "type": "string" },
+        "violationType": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "severity": { "type": "string" },
+        "reviewedByLecturer": { "type": "boolean" }
+      },
+      "required": ["id", "examId", "studentId", "violationType", "description"]
+    },
+    "StoredFile": {
+      "title": "StoredFile",
+      "description": "Metadata berkas yang diunggah untuk materi mata kuliah, tugas, maupun kelas",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fileName": { "type": "string" },
+        "mimeType": { "type": "string" },
+        "sizeBytes": { "type": "number" },
+        "fileSizeLabel": { "type": "string" },
+        "totalChunks": { "type": "number" },
+        "scope": { "type": "string" },
+        "scopeId": { "type": "string" },
+        "uploadedBy": { "type": "string" },
+        "uploadedAt": { "type": "string" }
+      },
+      "required": ["id", "fileName", "mimeType", "sizeBytes", "totalChunks"]
+    },
+    "FileChunk": {
+      "title": "FileChunk",
+      "description": "Potongan data biner terenkode base64 untuk berkas yang disimpan di Firestore",
+      "type": "object",
+      "properties": {
+        "chunkIndex": { "type": "number" },
+        "data": { "type": "string" }
+      },
+      "required": ["chunkIndex", "data"]
+    },
+    "AttendanceSession": {
+      "title": "AttendanceSession",
+      "description": "Sesi absensi kelas dan mata kuliah menggunakan QR code dinamis milik dosen",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "scope": { "type": "string", "enum": ["class", "course"] },
+        "classId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "title": { "type": "string" },
+        "lecturerId": { "type": "string" },
+        "lecturerName": { "type": "string" },
+        "startTime": { "type": "string" },
+        "endTime": { "type": "string" },
+        "qrRefreshSeconds": { "type": "number" },
+        "currentQrToken": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "scope", "title", "startTime", "endTime", "currentQrToken"]
+    },
+    "GradeConfig": {
+      "title": "GradeConfig",
+      "description": "Konfigurasi bobot penilaian ujian, tugas, absensi, serta kategori nilai huruf mutu",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "scope": { "type": "string", "enum": ["global", "class", "course"] },
+        "classId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "examWeight": { "type": "number" },
+        "assignmentWeight": { "type": "number" },
+        "attendanceWeight": { "type": "number" },
+        "gradingGroups": { "type": "array" },
+        "gradingComponents": { "type": "array" },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string" }
+      },
+      "required": ["id", "scope", "examWeight", "assignmentWeight", "attendanceWeight"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Data profil pengguna administrator, dosen, dan mahasiswa"
+    },
+    "/classes/{classId}": {
+      "schema": "ClassGroup",
+      "description": "Daftar pengelompokan kelas mahasiswa beserta berkas kelas"
+    },
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "Daftar mata kuliah, materi kuliah, penugasan, dan video E-Learning"
+    },
+    "/exams/{examId}": {
+      "schema": "Exam",
+      "description": "Daftar ujian, soal, dan konfigurasi penilaian IRT"
+    },
+    "/attempts/{attemptId}": {
+      "schema": "Attempt",
+      "description": "Hasil pengerjaan, estimasi kemampuan Theta IRT, dan nilai akhir mahasiswa"
+    },
+    "/violations/{violationId}": {
+      "schema": "Violation",
+      "description": "Catatan pelanggaran kecurangan yang dipantau AI"
+    },
+    "/stored_files/{fileId}": {
+      "schema": "StoredFile",
+      "description": "Metadata file unggahan dosen dan mahasiswa"
+    },
+    "/stored_files/{fileId}/chunks/{chunkId}": {
+      "schema": "FileChunk",
+      "description": "Potongan biner file untuk unduhan mahasiswa dan dosen"
+    },
+    "/attendance_sessions/{sessionId}": {
+      "schema": "AttendanceSession",
+      "description": "Sesi absensi kelas & mata kuliah berbasis QR Code yang diperbarui otomatis"
+    },
+    "/grade_configs/{configId}": {
+      "schema": "GradeConfig",
+      "description": "Pengaturan bobot penilaian (ujian, tugas, absensi) dan kategori nilai per kelas/mata kuliah"
+    }
+  }
+}

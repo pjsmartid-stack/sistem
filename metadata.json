@@ -1,0 +1,11 @@
+{
+  "name": "Sistem Manajemen Ujian",
+  "description": "Platform LMS ujian daring terintegrasi dengan pengawas AI cerdas, deteksi kecurangan real-time, impor soal format Aiken, dan manajemen nilai terpusat.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
